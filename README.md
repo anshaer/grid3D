@@ -64,7 +64,7 @@
 
 ### Windows 資料夾版
 
-[VoxelCharacter-Windows-folder](https://github.com/anshaer/grid3D-auto-web/actions/runs/42495427750/artifacts/13623695274)
+[VoxelCharacter-Windows-folder](https://github.com/anshaer/grid3D-auto-web/actions/runs/42577831784/artifacts/13655967610)
 
 提供的SHA-256（未在此重新下載驗算）：
 
@@ -74,7 +74,7 @@
 
 ### Mac Apple Silicon（M 系列）
 
-[VoxelCharacter-macOS-AppleSilicon](https://github.com/anshaer/grid3D-auto-web/actions/runs/42495427750/artifacts/13623720219)
+[VoxelCharacter-macOS-AppleSilicon](https://github.com/anshaer/grid3D-auto-web/actions/runs/42577831784/artifacts/13655863265)
 
 提供的SHA-256（未在此重新下載驗算）：
 
@@ -84,7 +84,7 @@
 
 ### Mac Intel
 
-[VoxelCharacter-macOS-Intel](https://github.com/anshaer/grid3D-auto-web/actions/runs/42495427750/artifacts/13623630261)
+[VoxelCharacter-macOS-Intel](https://github.com/anshaer/grid3D-auto-web/actions/runs/42577831784/artifacts/13656106998)
 
 提供的SHA-256（未在此重新下載驗算）：
 
