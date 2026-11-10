@@ -1,0 +1,14 @@
+{
+  "name": "voxel-character-app",
+  "version": "1.6.1",
+  "private": true,
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "dist": "node build-folder.cjs",
+    "test": "node test-package.cjs"
+  },
+  "devDependencies": {
+    "electron": "40.0.0"
+  }
+}
