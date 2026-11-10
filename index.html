@@ -1,1 +1,221 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>3D格子製作｜動捕角色・固定角色與場景</title><meta name="description" content="3D格子角色製作工具：Q版全身與面部動捕、固定角色與場景建模、JSON及GLB輸出，提供Windows與Mac免安裝應用下載。"><link rel="canonical" href="https://anshaer.github.io/grid3D/"><style>*{box-sizing:border-box}body{margin:0;background:#f5f4fa;color:#232135;font-family:system-ui,'Microsoft JhengHei',sans-serif;line-height:1.7}main{max-width:1100px;margin:auto;padding:44px 24px}nav{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}a{color:#6150ae;text-decoration:none}a:hover{text-decoration:underline}nav strong{letter-spacing:.05em}.hero{padding:62px 0 34px}.eyebrow{font-size:12px;letter-spacing:.2em;color:#786e99}h1{font-size:clamp(32px,5vw,54px);line-height:1.3;margin:14px 0}p{color:#716b83;margin:12px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.tool{background:white;border:1px solid #e3deee;border-radius:22px;padding:30px;display:flex;flex-direction:column}.icon{font-size:36px}.tool h2{font-size:25px;margin:16px 0 6px}.tag{font-size:12px;color:#796a9b}.tool p{flex:1}.button{margin-top:22px;padding:12px 20px;background:#6e56aa;color:white;border-radius:10px;text-align:center;font-weight:600}.tool:nth-child(2) .button{background:#3c827f}.details{font-size:13px}.section{margin-top:42px}h2{font-size:23px}.downloads{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.download{background:#fff;border:1px solid #e3deee;padding:16px;border-radius:12px;display:flex;justify-content:space-between;gap:12px}.note{font-size:13px}.docs{display:flex;gap:12px;flex-wrap:wrap}.docs a{background:#eae5f3;padding:9px 15px;border-radius:8px}footer{margin-top:48px;border-top:1px solid #e0dbe9;padding-top:20px;color:#8d859c;font-size:12px}a:focus-visible{outline:3px solid #c88de1;outline-offset:4px}@media(max-width:700px){main{padding:24px 18px}.hero{padding-top:38px}.grid,.downloads{grid-template-columns:1fr}.tool{padding:24px}}</style></head><body><main><nav><strong>◇ grid3D</strong><a href="https://github.com/anshaer/grid3D">GitHub 原始碼 ↗</a></nav><header class="hero"><div class="eyebrow">CREATE WITH VOXELS</div><h1>3D格子製作</h1><p>用方格搭出角色與世界。依作品用途，選擇你的製作工具。</p></header><div class="grid"><article class="tool"><div class="icon">🏃‍♂️</div><div class="tag">FACE · HEAD · BODY</div><h2>3D格子動捕角色</h2><p>圓頭Q版素體、獨立五官與可調支點。鏡頭追蹤面部、頭部與全身，手肘及膝蓋可彎曲。</p><div class="details">HTML／GLB／JSON輸出 · 預設128格</div><a class="button" href="character-builder.html">開啟動捕角色製作 →</a></article><article class="tool"><div class="icon">🧊</div><div class="tag">MODEL · SCENE · FRAME ANIMATION</div><h2>3D格子固定角色／場景</h2><p>建立固定角色、道具與場景，加入圖片參考，製作逐幀動畫及鏡頭變化。</p><div class="details">模型／動畫JSON · GLB與圖片輸出</div><a class="button" href="voxel-builder.html">開啟固定模型製作 →</a></article></div><p class="note">兩套工具使用不同JSON格式，請在原製作器載入專案。動捕首次使用需連線下載辨識模型。</p><section class="section"><h2>角色應用 · 免安裝下載</h2><div class="downloads"><a class="download" href="https://github.com/anshaer/grid3D-auto-web/actions/runs/42495427750/artifacts/13623695274">Windows 資料夾版 <span>↗</span></a><a class="download" href="https://github.com/anshaer/grid3D-auto-web/actions/runs/42495427750/artifacts/13623720219">Mac Apple Silicon（M 系列） <span>↗</span></a><a class="download" href="https://github.com/anshaer/grid3D-auto-web/actions/runs/42495427750/artifacts/13623630261">Mac Intel <span>↗</span></a></div><p class="note">解壓縮後保留完整資料夾。Mac M系列選Apple Silicon。Actions下載可能需登入GitHub，成品有保存期限；SHA-256與操作說明見綜合說明。</p></section><section class="section"><h2>說明與AI交接</h2><div class="docs"><a href="https://github.com/anshaer/grid3D#readme">綜合說明 ↗</a><a href="README.md">README.md</a><a href="AI_MOTION_CHARACTER.md">動捕角色 AI用MD</a><a href="AI_STATIC_SCENE.md">固定角色／場景 AI用MD</a></div></section><footer>© 2026–2030 anshaer.com</footer></main></body></html>
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3D格子製作｜動捕角色・固定角色與場景</title>
+  <meta name="description" content="3D格子角色製作工具：Q版全身與面部動捕、固定角色與場景建模、JSON及GLB輸出，提供Windows與Mac免安裝應用下載。">
+  <link rel="canonical" href="https://anshaer.github.io/grid3D/">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      background: #f5f4fa;
+      color: #232135;
+      font-family: system-ui, 'Microsoft JhengHei', sans-serif;
+      line-height: 1.7;
+    }
+    main {
+      max-width: 1100px;
+      margin: auto;
+      padding: 44px 24px;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    a {
+      color: #6150ae;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    nav strong {
+      letter-spacing: .05em;
+    }
+    .hero {
+      padding: 62px 0 34px;
+    }
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: .2em;
+      color: #786e99;
+    }
+    h1 {
+      font-size: clamp(32px, 5vw, 54px);
+      line-height: 1.3;
+      margin: 14px 0;
+    }
+    p {
+      color: #716b83;
+      margin: 12px 0;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .tool {
+      background: white;
+      border: 1px solid #e3deee;
+      border-radius: 22px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+    }
+    .icon {
+      font-size: 36px;
+    }
+    .tool h2 {
+      font-size: 25px;
+      margin: 16px 0 6px;
+    }
+    .tag {
+      font-size: 12px;
+      color: #796a9b;
+    }
+    .tool p {
+      flex: 1;
+    }
+    .button {
+      margin-top: 22px;
+      padding: 12px 20px;
+      background: #6e56aa;
+      color: white;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .tool:nth-child(2) .button {
+      background: #3c827f;
+    }
+    .details {
+      font-size: 13px;
+    }
+    .section {
+      margin-top: 42px;
+    }
+    h2 {
+      font-size: 23px;
+    }
+    .downloads {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .download {
+      background: #fff;
+      border: 1px solid #e3deee;
+      padding: 16px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .note {
+      font-size: 13px;
+    }
+    .docs {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .docs a {
+      background: #eae5f3;
+      padding: 9px 15px;
+      border-radius: 8px;
+    }
+    footer {
+      margin-top: 48px;
+      border-top: 1px solid #e0dbe9;
+      padding-top: 20px;
+      color: #8d859c;
+      font-size: 12px;
+    }
+    a:focus-visible {
+      outline: 3px solid #c88de1;
+      outline-offset: 4px;
+    }
+    @media(max-width: 700px) {
+      main {
+        padding: 24px 18px;
+      }
+      .hero {
+        padding-top: 38px;
+      }
+      .grid, .downloads {
+        grid-template-columns: 1fr;
+      }
+      .tool {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <nav>
+      <strong>◇ grid3D</strong>
+      <a href="https://github.com/anshaer/grid3D">GitHub 原始碼 ↗</a>
+    </nav>
+    
+    <header class="hero">
+      <div class="eyebrow">CREATE WITH VOXELS</div>
+      <h1>3D格子製作</h1>
+      <p>用方格搭出角色與世界。依作品用途，選擇你的製作工具。</p>
+    </header>
+    
+    <div class="grid">
+      <article class="tool">
+        <div class="icon">🏃‍♂️</div>
+        <div class="tag">FACE · HEAD · BODY</div>
+        <h2>3D格子動捕角色</h2>
+        <p>圓頭Q版素體、獨立五官與可調支點。鏡頭追蹤面部、頭部與全身，手肘及膝蓋可彎曲。</p>
+        <div class="details">HTML／GLB／JSON輸出 · 預設128格</div>
+        <a class="button" href="character-builder.html">開啟動捕角色製作 →</a>
+      </article>
+      
+      <article class="tool">
+        <div class="icon">🧊</div>
+        <div class="tag">MODEL · SCENE · FRAME ANIMATION</div>
+        <h2>3D格子固定角色／場景</h2>
+        <p>建立固定角色、道具與場景，加入圖片參考，製作逐幀動畫及鏡頭變化。</p>
+        <div class="details">模型／動畫JSON · GLB與圖片輸出</div>
+        <a class="button" href="voxel-builder.html">開啟固定模型製作 →</a>
+      </article>
+    </div>
+    
+    <p class="note">兩套工具使用不同JSON格式，請在原製作器載入專案。動捕首次使用需連線下載辨識模型。</p>
+    
+    <section class="section">
+      <h2>角色應用 · 免安裝下載</h2>
+      <div class="downloads">
+        <a class="download" href="https://github.com/anshaer/grid3D-auto-web/actions/runs/42495427750/artifacts/13623695274">Windows 資料夾版 <span>↗</span></a>
+        <a class="download" href="https://github.com/anshaer/grid3D-auto-web/actions/runs/42495427750/artifacts/13623720219">Mac Apple Silicon（M 系列） <span>↗</span></a>
+        <a class="download" href="https://github.com/anshaer/grid3D-auto-web/actions/runs/42495427750/artifacts/13623630261">Mac Intel <span>↗</span></a>
+      </div>
+      <p class="note">解壓縮後保留完整資料夾。Mac M系列選Apple Silicon。Actions下載可能需登入GitHub，成品有保存期限；SHA-256與操作說明見綜合說明。</p>
+    </section>
+    
+    <section class="section">
+      <h2>說明與AI交接</h2>
+      <div class="docs">
+        <a href="https://github.com/anshaer/grid3D#readme">綜合說明 ↗</a>
+        <a href="README.md">README.md</a>
+        <a href="AI_MOTION_CHARACTER.md">動捕角色 AI用MD</a>
+        <a href="AI_STATIC_SCENE.md">固定角色／場景 AI用MD</a>
+      </div>
+    </section>
+    
+    <footer>
+      © 2026–2030 anshaer.com
+    </footer>
+  </main>
+</body>
+</html>
