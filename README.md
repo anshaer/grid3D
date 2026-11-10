@@ -66,18 +66,31 @@
 
 [VoxelCharacter-Windows-folder](https://github.com/anshaer/grid3D-auto-web/actions/runs/42577831784/artifacts/13655967610)
 
+提供的SHA-256（未在此重新下載驗算）：
 
+```text
+4ba3be0164db80a9f85b681309e8a3da934c05de2cddce47f03c7aa0b47b3fc9
+```
 
 ### Mac Apple Silicon（M 系列）
 
 [VoxelCharacter-macOS-AppleSilicon](https://github.com/anshaer/grid3D-auto-web/actions/runs/42577831784/artifacts/13655863265)
 
+提供的SHA-256（未在此重新下載驗算）：
+
+```text
+2c18b042ca8bede86a730977c6ffe75f4c5887d575494092b6c89b899c164b7d
+```
 
 ### Mac Intel
 
 [VoxelCharacter-macOS-Intel](https://github.com/anshaer/grid3D-auto-web/actions/runs/42577831784/artifacts/13656106998)
 
+提供的SHA-256（未在此重新下載驗算）：
 
+```text
+fb599f958197a1fe6aca03979d0548c96a803fd794721f35d43048198a8b07cd
+```
 
 Actions下載可能需要登入GitHub，且成品有保存期限；失效時請前往[建置記錄](https://github.com/anshaer/grid3D-auto-web/actions)取得新成品。以上校驗值只對應所提供的原始檔，不適用重新壓縮的ZIP。可在Windows用 `Get-FileHash 檔名.zip -Algorithm SHA256`，macOS用 `shasum -a 256 檔名.zip` 比對。
 
@@ -85,7 +98,9 @@ Actions下載可能需要登入GitHub，且成品有保存期限；失效時請�
 
 Windows資料夾版可在完全關閉應用後替換 `resources/app/index.html`；務必替換為角色應用頁，別放製作器或本專案首頁。Mac `.app` 內文件受簽章涵蓋，修改後需重新建置／簽署。Mac本機簽署不等於Apple公證，首次開啟與攝影機授權仍由系統管理。GitHub建置不保證通過Windows或macOS信任檢查。
 
+## 放到GitHub Pages
 
+將本包內容放到 `anshaer/grid3D` 的Pages來源根目錄，保留檔名與資料夾。首頁 `index.html` 為兩套工具入口，無須重新導向；預設網址為 https://anshaer.github.io/grid3D/ 。本包不包含桌面建置工作流程，桌面建置保留在 `grid3D-auto-web`。
 
 ## 給AI與維護者
 
