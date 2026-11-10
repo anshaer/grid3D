@@ -1,0 +1,74 @@
+name: Build desktop apps
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'desktop/**'
+      - '.github/workflows/build-app.yml'
+permissions:
+  contents: read
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            arch: x64
+            artifact: VoxelCharacter-Windows-folder
+          - os: macos-15
+            arch: arm64
+            artifact: VoxelCharacter-macOS-AppleSilicon
+          - os: macos-15-intel
+            arch: x64
+            artifact: VoxelCharacter-macOS-Intel
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: desktop
+    env:
+      npm_config_arch: ${{ matrix.arch }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Test packaging allowlist and EX exclusion
+        run: npm test
+      - name: Install desktop dependencies
+        run: npm install
+      - name: Build only desktop application files
+        run: npm run dist
+      - name: Verify generated application payload
+        shell: bash
+        run: |
+          node -e "const b=require('./build-folder.cjs');b.verifyPayload(process.platform==='darwin'?'dist/VoxelCharacter/Electron.app/Contents/Resources/app':'dist/VoxelCharacter/resources/app')"
+      - name: Verify Windows runtime remains unchanged
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $a = (Get-FileHash node_modules/electron/dist/electron.exe -Algorithm SHA256).Hash
+          $b = (Get-FileHash dist/VoxelCharacter/electron.exe -Algorithm SHA256).Hash
+          if ($a -ne $b) { throw 'Electron executable changed' }
+      - name: Prepare macOS camera permission and local signature
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          APP='dist/VoxelCharacter/Electron.app'
+          /usr/libexec/PlistBuddy -c 'Add :NSCameraUsageDescription string Face and head tracking uses your selected camera.' "$APP/Contents/Info.plist" || /usr/libexec/PlistBuddy -c 'Set :NSCameraUsageDescription Face and head tracking uses your selected camera.' "$APP/Contents/Info.plist"
+          codesign --force --deep --sign - "$APP"
+          codesign --verify --deep --strict "$APP"
+          ditto -c -k --sequesterRsrc --keepParent dist/VoxelCharacter VoxelCharacter-macOS.zip
+      - uses: actions/upload-artifact@v4
+        if: runner.os == 'Windows'
+        with:
+          name: ${{ matrix.artifact }}
+          path: desktop/dist/VoxelCharacter/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: runner.os == 'macOS'
+        with:
+          name: ${{ matrix.artifact }}
+          path: desktop/VoxelCharacter-macOS.zip
+          if-no-files-found: error
