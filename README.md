@@ -66,31 +66,18 @@
 
 [VoxelCharacter-Windows-folder](https://github.com/anshaer/grid3D-auto-web/actions/runs/42577831784/artifacts/13655967610)
 
-提供的SHA-256（未在此重新下載驗算）：
 
-```text
-57593e2ccfff9035235aea1679458401e4a93b568491eddce48c0137e617deec
-```
 
 ### Mac Apple Silicon（M 系列）
 
 [VoxelCharacter-macOS-AppleSilicon](https://github.com/anshaer/grid3D-auto-web/actions/runs/42577831784/artifacts/13655863265)
 
-提供的SHA-256（未在此重新下載驗算）：
-
-```text
-3c14af5c0abf69ef61b30f7900af0d6b393b234336dfbeb2e794e1cf8225ea4d
-```
 
 ### Mac Intel
 
 [VoxelCharacter-macOS-Intel](https://github.com/anshaer/grid3D-auto-web/actions/runs/42577831784/artifacts/13656106998)
 
-提供的SHA-256（未在此重新下載驗算）：
 
-```text
-a8877c4e9bbae0d2cff4bd4511e4fafdbf97106992ede91c4d3d3520b0155122
-```
 
 Actions下載可能需要登入GitHub，且成品有保存期限；失效時請前往[建置記錄](https://github.com/anshaer/grid3D-auto-web/actions)取得新成品。以上校驗值只對應所提供的原始檔，不適用重新壓縮的ZIP。可在Windows用 `Get-FileHash 檔名.zip -Algorithm SHA256`，macOS用 `shasum -a 256 檔名.zip` 比對。
 
