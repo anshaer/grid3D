@@ -24,7 +24,7 @@ settings.captureMode為face／full；鏡頭全身使用MediaPipe Tasks Vision0.1
 
 ## 輸出與桌面
 JSON保留完整編輯資料，HTML保留追蹤及設定，GLB只烘焙當前幾何／姿勢。輸出頁籤動畫設定在export的tabTitle／filename／animateTitle／titleFormat／titleFrames／titleInterval，document.title文字逐格，固定emoji favicon，並非影片。保留檔名清理與字元上限。
-桌面來源在grid3D-auto-web，勿把本首頁當桌面index.html。Windows保留官方Electron執行檔，外置resources/app/index.html。Mac複製framework須保留相對symlink（dereference:false,verbatimSymlinks:true），更新Info.plist後簽署並用ditto封裝；不要解參照symlink，曾造成unsealed contents錯誤。現行桌面與製作器都已加入彎折／全身，具體打包版本以該庫為準。
+桌面來源在本儲存庫desktop/，勿把網站首頁當桌面index.html。Windows保留官方Electron執行檔，外置resources/app/index.html。Mac複製framework須保留相對symlink（dereference:false,verbatimSymlinks:true），更新Info.plist後簽署並用ditto封裝；不要解參照symlink，曾造成unsealed contents錯誤。現行桌面與製作器都已加入彎折／全身，具體打包版本以desktop/package.json為準。
 
 ## 驗證
 語法檢查、JSON往返、跨五官衝突、支點／彎折儲存、全身與面部同時輸入、髖部不可見手臂仍有效、末端遮擋上段有效、鏡像與逾時不改手動姿勢。test_runtime.cjs依賴原測試環境DOM／canvas，先檢查相依；無環境不能寫已通過。需真人鏡頭及桌面實機另驗證，不虛報FPS。
@@ -124,3 +124,8 @@ refreshDetectionInfo依latest、bodyLatest與各bodyParts時間戳判斷有效�
 settings.holdMissingPose與settings.poseLockScope保存在JSON／輸出HTML；鎖定快照與倒數屬本次工作階段，不寫回JSON、手動支點或手動旋轉。GLB仍烘焙當下顯示姿勢。停止輸入、切換來源／偵測範圍或載入角色會清除快照與取消倒數。
 實作：effectiveOverlay／effectiveBody統一挑選手動、追蹤、保留或鎖定軀幹；heldLimbs／heldTorso保存自動保持，poseLocks保存明確鎖定，後者優先。裝飾、角色模型schema與原生視窗設定不變。
 已驗證：倒數未到3秒可動、以倒數結束的姿勢取樣、全身鎖定、單肢鎖定、臉部頭部持續、解除後恢復、來源變更取消倒數、自動保持開關與JSON設定。製作頁與角色頁模擬通過；未重新做真人鏡頭或各平台實測。
+
+## 單一儲存庫與桌面應用打包約束
+主儲存庫為 https://github.com/anshaer/grid3D ，網站網址為 https://anshaer.github.io/grid3D/ 。桌面應用位於desktop/，工作流程必須放根目錄.github/workflows/build-app.yml。EX/是使用者自行管理的範例JSON，不刪除、不覆蓋、不加入桌面應用。
+打包必須保留desktop/build-folder.cjs的明確檔案白名單；不可改成複製專案根目錄或整個desktop/。應用payload只含index.html、main.cjs、preload.cjs、指定cube圖示與產生的執行用package.json。Actions只上傳desktop/dist/VoxelCharacter及Mac內層ZIP。網站／EX／說明文件／測試／node_modules等資料不可混入payload。
+桌面v1.6.1保留六個settings.captureParts勾選；未勾選部位維持世界姿勢，頭部勾選僅控制旋轉，面部表情不鎖定。勿以網站舊角色頁覆蓋desktop/index.html而遺失此功能。建置測試執行cd desktop && npm test。

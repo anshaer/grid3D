@@ -4,7 +4,7 @@
 
 - 網站：https://anshaer.github.io/grid3D/
 - 原始碼：https://github.com/anshaer/grid3D
-- 桌面應用建置：https://github.com/anshaer/grid3D-auto-web
+- 桌面應用建置：https://github.com/anshaer/grid3D/actions/workflows/build-app.yml
 
 ## 工具入口
 
@@ -60,45 +60,32 @@
 
 ## 桌面免安裝下載
 
-以下為提供的GitHub Actions成品連結，解壓縮後執行；Windows須保留完整資料夾，不要只複製EXE。Mac M1／M2／M3等M系列選Apple Silicon，Intel處理器選Intel。
+[前往 grid3D 桌面應用 Actions](https://github.com/anshaer/grid3D/actions/workflows/build-app.yml)，開啟最新成功的執行紀錄，在 **Artifacts** 下載對應平台：
 
-### Windows 資料夾版
+| 平台 | 下載包名稱 |
+| --- | --- |
+| Windows | `VoxelCharacter-Windows-folder` |
+| Mac M系列 | `VoxelCharacter-macOS-AppleSilicon` |
+| Mac Intel | `VoxelCharacter-macOS-Intel` |
 
-[VoxelCharacter-Windows-folder](https://github.com/anshaer/grid3D-auto-web/actions/runs/42577831784/artifacts/13655967610)
+第一次合併後，需先執行 **Build desktop apps** 工作流程並成功完成，才會出現此儲存庫的下載包。舊儲存庫的 Actions 成品不會隨原始碼搬移。下載可能需要登入 GitHub；成品受保存期限限制。新包的雜湊值以該次實際建置產物為準，不沿用舊包的SHA-256。
 
-提供的SHA-256（未在此重新下載驗算）：
+Windows解壓縮後執行 `electron.exe` 並保留整個資料夾；Mac解開下載內的ZIP後執行 `Electron.app`。Mac M1／M2等M系列選Apple Silicon，Intel處理器選Intel。
 
-```text
-4ba3be0164db80a9f85b681309e8a3da934c05de2cddce47f03c7aa0b47b3fc9
-```
+桌面 v1.6.1 保留透明視窗、JSON載入、防背景降速，以及六個「動補應用範圍」勾選：頭部、軀幹、左手、右手、左腳、右腳。只有勾選的部位套用動捕；取消勾選維持當下世界姿勢及彎折，臉部表情持續。詳細設定與Windows單檔更新見 [desktop/README.md](desktop/README.md)。
 
-### Mac Apple Silicon（M 系列）
+## 同一儲存庫的網站與桌面應用
 
-[VoxelCharacter-macOS-AppleSilicon](https://github.com/anshaer/grid3D-auto-web/actions/runs/42577831784/artifacts/13655863265)
+- 主儲存庫：https://github.com/anshaer/grid3D
+- 網站仍在根目錄，GitHub Pages網址不變。
+- 桌面應用原始碼在 `desktop/`；建置工作流程在根目錄 `.github/workflows/build-app.yml`。
+- `EX/` 是自行管理的範例JSON；保留在儲存庫，**不進入桌面應用成品**。
+- 打包採指定檔案清單，只放 `desktop/index.html`、`main.cjs`、`preload.cjs`、三個cube圖示及產生的執行用package.json。
+- `README`、AI用MD、網站頁面、`EX/`、`examples/`、`motion-source/`、測試程式、工作流程與開發用node_modules不會被加入應用頁面資料夾。
+- 修改 `desktop/**` 或打包工作流程才自動建置；只更新網站或 `EX/**` 不觸發。可隨時從Actions手動Run workflow。
+- 網站及桌面頁仍是各自的成品入口；合併儲存庫不會自動把製作頁覆蓋成桌面頁。
 
-提供的SHA-256（未在此重新下載驗算）：
-
-```text
-2c18b042ca8bede86a730977c6ffe75f4c5887d575494092b6c89b899c164b7d
-```
-
-### Mac Intel
-
-[VoxelCharacter-macOS-Intel](https://github.com/anshaer/grid3D-auto-web/actions/runs/42577831784/artifacts/13656106998)
-
-提供的SHA-256（未在此重新下載驗算）：
-
-```text
-fb599f958197a1fe6aca03979d0548c96a803fd794721f35d43048198a8b07cd
-```
-
-Actions下載可能需要登入GitHub，且成品有保存期限；失效時請前往[建置記錄](https://github.com/anshaer/grid3D-auto-web/actions)取得新成品。以上校驗值只對應所提供的原始檔，不適用重新壓縮的ZIP。可在Windows用 `Get-FileHash 檔名.zip -Algorithm SHA256`，macOS用 `shasum -a 256 檔名.zip` 比對。
-
-桌面版使用獨立視窗與背景執行設定，減少瀏覽器背景分頁節流影響；最小化、系統休眠或裝置資源不足仍可能影響追蹤。透明視窗需要原生應用與HTML同時啟用透明。應用標題由HTML的頁籤名稱控制。
-
-Windows資料夾版可在完全關閉應用後替換 `resources/app/index.html`；務必替換為角色應用頁，別放製作器或本專案首頁。Mac `.app` 內文件受簽章涵蓋，修改後需重新建置／簽署。Mac本機簽署不等於Apple公證，首次開啟與攝影機授權仍由系統管理。GitHub建置不保證通過Windows或macOS信任檢查。
-
-
+建置前在 `desktop/` 執行 `npm test`，會用模擬Windows／Mac執行環境檢查檔案白名單、EX排除、官方Windows執行檔位元組及Mac符號連結保留。
 
 ## 給AI與維護者
 

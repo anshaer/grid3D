@@ -23,3 +23,8 @@ exportAxes可保存輸出軸選擇，值格式請看currentAxes／axisMatrix；�
 
 ## 與另一套工具及桌面關係
 動捕角色讀AI_MOTION_CHARACTER.md。固定模型JSON不能直接讓動捕桌面應用作角色；如需轉換，要另設計部位、五官與支點映射，先定義轉換規格。桌面下載連結／SHA-256統一由README維護，不捏造簽章或平台測試結果。保留附件中的第三方授權註記，修改後仍交付單檔HTML。
+
+## 單一儲存庫與桌面應用打包約束
+主儲存庫為 https://github.com/anshaer/grid3D ，網站網址為 https://anshaer.github.io/grid3D/ 。桌面應用位於desktop/，工作流程必須放根目錄.github/workflows/build-app.yml。EX/是使用者自行管理的範例JSON，不刪除、不覆蓋、不加入桌面應用。
+打包必須保留desktop/build-folder.cjs的明確檔案白名單；不可改成複製專案根目錄或整個desktop/。應用payload只含index.html、main.cjs、preload.cjs、指定cube圖示與產生的執行用package.json。Actions只上傳desktop/dist/VoxelCharacter及Mac內層ZIP。網站／EX／說明文件／測試／node_modules等資料不可混入payload。
+桌面v1.6.1保留六個settings.captureParts勾選；未勾選部位維持世界姿勢，頭部勾選僅控制旋轉，面部表情不鎖定。勿以網站舊角色頁覆蓋desktop/index.html而遺失此功能。建置測試執行cd desktop && npm test。
