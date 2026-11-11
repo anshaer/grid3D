@@ -1,7 +1,9 @@
 # AI維護交接：3D格子動捕角色
 
+更新：2026-11-11｜桌面v1.6.1｜網頁製作器／角色頁v19
+
 ## 任務邊界
-網站根址 https://anshaer.github.io/grid3D/ ，程式庫 https://github.com/anshaer/grid3D 。本文件只描述 character-builder.html／character-player.html；固定模型工具請讀AI_STATIC_SCENE.md。不要把兩種JSON互轉當成既有功能。使用者偏好單檔HTML、透明角色頁、可編輯JSON、免安裝資料夾應用。沒有新需求不要重做角色或改變快捷鍵。
+網站根址 https://anshaer.github.io/grid3D/ ，程式庫 https://github.com/anshaer/grid3D 。本文件描述 character-builder.html／character-player.html、motion-source及desktop桌面應用；固定模型工具請讀AI_STATIC_SCENE.md。不要把兩種JSON互轉當成既有功能。使用者偏好單檔HTML、透明角色頁、可編輯JSON、免安裝資料夾應用。沒有新需求不要重做角色或改變快捷鍵。
 
 ## 原始碼與重建
 motion-source/app.js為UI、編輯、鏡頭、VMC與匯出；core.js為schema、表情、姿勢及GLB／ZIP；voxel.js為編解碼與表面合併；gpu.js為渲染；template.html＋style.css為版面。
@@ -20,7 +22,7 @@ core.initRig補入torso.pivot／rotation與四肢bend={enabled,pivot,rotation}�
 
 ## 追蹤現況
 settings.captureMode為face／full；鏡頭全身使用MediaPipe Tasks Vision0.10.18 FaceLandmarker與PoseLandmarker Lite CPU，同一攝影機供面部與身體。worldLandmarks優先，poseWorldLandmarks及影像landmarks為退路。各肢獨立求解，visibility>=0.3，不以presence=0封鎖；不要求雙肩雙髖同時有效，腕／踝遮住仍可處理上段。
-軀幹可用肩髖、僅肩近似或上一基準。平滑0.55舊＋0.45新；面部間隔33ms、身體66ms為上限節流，非實測FPS。四肢800ms、軀幹1200ms、面部1600ms各自逾時回復。綠骨架與四肢有效狀態用於診斷。停止追蹤恢復手動姿勢。3秒校正，不抹除肘膝實際彎曲。VMC仍只有面部／頭部，無全身VMC映射。無手指、腳掌局部、地面位移、腳底鎖定。
+軀幹可用肩髖、僅肩近似或上一基準。平滑0.55舊＋0.45新；面部間隔33ms、身體66ms為上限節流，非實測FPS。四肢800ms、軀幹1200ms、面部1600ms各自判斷有效性；軀幹／四肢依自動維持與應用範圍設定保留姿勢，不能一律復位。可見UI僅顯示辨識資訊，不顯示真人原始影像或綠骨架；video在畫面外持續供模型取樣。網頁停止追蹤會清除暫態保持；桌面未勾選部位有獨立captureHolds，重啟攝影機時不得因clearBody而丟失。切回手動可編輯手動姿勢。3秒校正，不抹除肘膝實際彎曲。VMC仍只有面部／頭部，無全身VMC映射。無手指、腳掌局部、地面位移、腳底鎖定。
 
 ## 輸出與桌面
 JSON保留完整編輯資料，HTML保留追蹤及設定，GLB只烘焙當前幾何／姿勢。輸出頁籤動畫設定在export的tabTitle／filename／animateTitle／titleFormat／titleFrames／titleInterval，document.title文字逐格，固定emoji favicon，並非影片。保留檔名清理與字元上限。
@@ -31,7 +33,7 @@ JSON保留完整編輯資料，HTML保留追蹤及設定，GLB只烘焙當前幾
 
 ## 累計角色生成算法修正（128格四角色）
 
-這些是**JSON模型生成算法**的修正，不是製作器／EXE自動修復功能；舊JSON不會自行變好，必須以新算法重新生成或編輯。最新四角色包內附 `generation/` 可重現程式。原網站製作器仍只負責讀寫／預覽／追蹤。
+這些是**JSON模型生成算法**的修正，不是製作器／EXE自動修復功能；舊JSON不會自行變好，必須以新算法重新生成或編輯。先前四角色生成包可另附 `generation/` 可重現程式；該生成包不屬於此儲存庫的必要檔案，不可假設這裡已有generation目錄。原網站製作器仍只負責讀寫／預覽／追蹤。
 
 ### 生成順序與資料不變量
 
@@ -94,7 +96,7 @@ JSON保留完整編輯資料，HTML保留追蹤及設定，GLB只烘焙當前幾
 
 ### 四角色包內程式
 
-`generation/Cute_Four_128/build.py`為累計生成算法，`verify.cjs`為既有核心格式／表情／分段驗證。依賴Python＋NumPy及Node.js；渲染預覽另需Pillow。進入 `generation/` 後執行：
+`generation/Cute_Four_128/build.py`為累計生成算法，`verify.cjs`為既有核心格式／表情／分段驗證。依賴Python＋NumPy及Node.js；渲染預覽另需Pillow。只在取得該外部生成包、確認相應檔案存在後，進入 `generation/` 執行：
 
 ```bash
 python3 Cute_Four_128/build.py
@@ -105,27 +107,74 @@ python3 Cute_Four_128/render_clothes_views.py
 
 輸出仍是128格可編輯JSON，沒有改schema或要求使用者換EXE。原圖背面資訊不足處仍為Q版推定造型，不應稱為完全還原原設定。
 
-## 辨識資訊UI同步（製作器v17／桌面v1.4）
-輸入區用.detection-info的dl顯示來源、左右眼嘴眉、校正後頭部角度與軀幹／四肢狀態。video.capture-sensor在畫面外維持播放與辨識取樣，不用display:none或停止串流來隱藏預覽。已移除bodySkeleton可見畫布與繪圖負擔。
-refreshDetectionInfo依latest、bodyLatest與各bodyParts時間戳判斷有效性；syncState即時更新，250ms計時器處理失效顯示。面部1600ms、四肢800ms、軀幹1200ms；手動狀態不可標為相機已辨識，VMC不可標為全身。偵測資訊不存入JSON；html()清空複製文件內即時欄位，匯出頁啟動後重新填入。
-測試須驗證左右眼不同、嘴型、角度、全身部位成功與逾時、停止／切來源、感測video不顯示、輸出與桌面同步。UI的資訊變更不改MediaPipe輸入、校正、鏡像、JSON schema或原生透明與背景執行設定。桌面原始碼版本1.4.0，真正EXE／macOS成品需GitHub Actions重新產生；不要聲稱已編譯或實機驗證。
+## 新角色／道具後續修正：避免重犯
 
-## v18 腳部未辨識時不繼承軀幹動捕
-全身鏡頭模式下，腿部必須有有效髖／膝／踝完整鏈才更新。每個身體資料包若某腿缺少完整鏈，該腿立即停止更新，不沿用過期的軀幹相對旋轉。
-有歷史時，保留最後一次有效腿部的模型世界座標上段及下段矩陣，含髖部位置與膝彎曲；沒有歷史時使用原手動／中立站姿，排除即時軀幹動捕變換。左右腳獨立處理，手部／面部繼續追蹤。這是模型座標姿勢保留，不是新增地面定位或腳底鎖定演算法。
-原800ms有效期僅決定目前訊號是否有效；保留姿勢不因1200ms軀幹逾時被清掉。重新取得完整腿部資料即恢復追蹤。停止輸入、切換來源、切換偵測模式或載入角色會clearBody並清除歷史，恢復手動姿勢。
-資訊欄顯示「未辨識／維持上一姿勢」或「未辨識／維持站姿」，不可把保留姿勢標成已辨識。暫態矩陣不寫回JSON與手動支點／角度。相機視角操作仍正常影響整個場景。
-驗證包括隱藏雙腿但改變肩膀傾斜、單腳踝遺失、全身逾時、無歷史站姿、切換來源清除歷史及既有144組五官／彎折／鏡像測試；製作與角色頁模擬通過。參考使用者影片定位問題，未在本次重新做真人攝影機或桌面平台實測。
+- 帽子：不要只在髮殼外放帽簷和過小尖頂。帽內被遮住的上段髮量要清除，帽冠需封閉並覆蓋髮帽輪廓；再建立連續帽簷、帽帶和尖頂。先確認128格的頂部空間，不能把超出網格的帽尖截平或保留穿出的頭髮。頭飾仍歸head。
+- 頭紗：以包覆後腦的弧面、外展曲面、縱向皺褶及波浪邊生成，避免固定Y大平板。**整片頭紗歸head**，讓它隨轉頭；婚紗裙與後拖尾歸torso，不能把頭紗下段誤綁軀幹而分離。現行方格紗是淺色不透明幾何，不宣稱具有半透明薄紗材質。
+- 長道具：目前手肘使用平面切分，跨過切分平面的法杖／十字鎬等會被切開。現有JSON相容作法是持物側整臂停用bend，代價是該側手肘不彎。若要保留手肘與剛性道具，需另外設計下段歸屬或附件機制，不可聲稱現有格式已支援。短鼓棒可全部放進下段半空間，須逐格驗證沒有被切到上段。
+- 愛心：小尺寸採一致的雙圓頂、中央凹口與尖底遮罩；避免多個厚橢球疊成平頂或用內層色塊蓋掉凹口。
+- 鬼火／愛心／浮書：既有範例為頭部綁定的周身懸浮造型，不是獨立粒子、繞行或飛行動畫。生成時及交付說明必須區分。
+- 電子琴、摺疊桌、筆電、鼓組、立地麥克風：完整道具及支架歸torso，不併入手臂，讓雙手維持獨立活動；目前不帶演奏發聲功能。
+- 電子琴：演奏者在較大Y一側，黑鍵靠遠側、白鍵後半段，黑鍵中心對準白鍵間隙；每7個白鍵按2顆／3顆交替。譜架置於遠離演奏者的一側，頂部向遠側後傾，樂譜面朝演奏者。不要把譜架放在近身鍵盤邊。
+- 琴架／桌架：使用前後有深度的支架、上方承托橫桿、中心接軸和接地底腳；驗證琴身與架頂實際接觸，不能只有一片扁平X。
+- 麥克風：檢查頭部與麥克風幾何間距，不只看正面。曾因膠囊過高、過近而插入下巴；需向前移並降低，另測合理轉頭。中立站姿無碰撞不等於所有動作自動避碰，現有應用沒有碰撞解算。
+- 貓耳毛線帽：前後厚度以約3～4格為起點，不做成10多格厚塊。可將左右耳各兩種形態的差分加入對應browLeftNormal／Raised與browRightNormal／Raised；要對兩狀態聯集寫完整替換／刪除資料，缺席處還原帽體，避免殘留上一姿態或挖空帽子。維持跨五官ownership不衝突。這是眉毛狀態觸發的兩段姿態，不是物理連續擺動。
+- 衣服裝飾投影遇到前方道具時，要只取衣服支撐面，不可直接取整個torso的最小Y，否則西裝翻領／胸飾會被畫到筆電或麥克風上。優先分開保存衣服與道具的實心遮罩，再投影服飾紋路。範例的Y區間過濾只適用該模型，不能當成通用衣服辨識。
 
-## v19 自動維持姿勢與3秒鎖定
-輸入／測試分頁新增「偵測不到時維持姿勢（軀幹／四肢）」開關，預設開啟。舊JSON缺欄位亦預設開啟。追蹤不足時保留最後有效的軀幹與四肢模型世界姿勢；沒有歷史則維持手動／中立姿勢。開關關閉後，失效的身體回到手動姿勢；腿部仍不繼承無效即時軀幹而飄動。
-新增鎖定範圍：全身（軀幹＋四肢）、僅四肢、軀幹、左手／手肘、右手／手肘、左腳／膝蓋、右腳／膝蓋。按「3秒後鎖定姿勢」後倒數，3秒結束才擷取當下顯示姿勢。沒有辨識資料時可鎖住手動或已保留的姿勢，不宣稱這些是新辨識結果。可分次鎖不同部位；解除鎖定會取消倒數並解除全部鎖定。
-頭部與臉部不鎖定。軀幹鎖定後，頭部補償使用鎖定時的軀幹基準，避免新的身體追蹤干擾頭部。每條肢體保存上段與下段世界矩陣，含位置及彎折，不只凍結局部角度。資訊面板顯示「已鎖定」與「未辨識／維持上一姿勢」區別。
-settings.holdMissingPose與settings.poseLockScope保存在JSON／輸出HTML；鎖定快照與倒數屬本次工作階段，不寫回JSON、手動支點或手動旋轉。GLB仍烘焙當下顯示姿勢。停止輸入、切換來源／偵測範圍或載入角色會清除快照與取消倒數。
-實作：effectiveOverlay／effectiveBody統一挑選手動、追蹤、保留或鎖定軀幹；heldLimbs／heldTorso保存自動保持，poseLocks保存明確鎖定，後者優先。裝飾、角色模型schema與原生視窗設定不變。
-已驗證：倒數未到3秒可動、以倒數結束的姿勢取樣、全身鎖定、單肢鎖定、臉部頭部持續、解除後恢復、來源變更取消倒數、自動保持開關與JSON設定。製作頁與角色頁模擬通過；未重新做真人鏡頭或各平台實測。
+修復上傳JSON時先以使用者檔案為準；除指定幾何及必要的歸屬／表情外，逐項保留原軀幹、四肢、支點、面部patch、設定及匯出欄位。檢查144組表情與正／側／背視角；有連動時另檢查各狀態切換，不把預覽圖當成真人追蹤測試。
 
-## 單一儲存庫與桌面應用打包約束
-主儲存庫為 https://github.com/anshaer/grid3D ，網站網址為 https://anshaer.github.io/grid3D/ 。桌面應用位於desktop/，工作流程必須放根目錄.github/workflows/build-app.yml。EX/是使用者自行管理的範例JSON，不刪除、不覆蓋、不加入桌面應用。
-打包必須保留desktop/build-folder.cjs的明確檔案白名單；不可改成複製專案根目錄或整個desktop/。應用payload只含index.html、main.cjs、preload.cjs、指定cube圖示與產生的執行用package.json。Actions只上傳desktop/dist/VoxelCharacter及Mac內層ZIP。網站／EX／說明文件／測試／node_modules等資料不可混入payload。
-桌面v1.6.1保留六個settings.captureParts勾選；未勾選部位維持世界姿勢，頭部勾選僅控制旋轉，面部表情不鎖定。勿以網站舊角色頁覆蓋desktop/index.html而遺失此功能。建置測試執行cd desktop && npm test。
+## 目前維護入口與同步邊界
+
+| 檔案／目錄 | 職責 |
+| --- | --- |
+| index.html | 網站首頁與入口、grid3D Actions下載導引；不是桌面播放器 |
+| character-builder.html／character-player.html | 根目錄網站單檔成品，維持v19行為 |
+| motion-source/ | 網頁拆分原始碼，改動後須重建根目錄成品 |
+| desktop/index.html | 桌面播放器，內含appCode／coreCode與桌面橋接；目前v1.6.1 |
+| desktop/main.cjs／preload.cjs | Electron透明視窗、防背景節流、攝影機與視窗控制 |
+| desktop/build-folder.cjs | 複製執行環境及白名單payload、清空舊輸出、驗證結果 |
+| desktop/test-package.cjs | 模擬Windows／Mac打包測試，不需下載Electron |
+| .github/workflows/build-app.yml | 根目錄三平台Actions |
+| EX/ | 使用者自行管理的範例JSON，不刪除／覆蓋，不進應用包 |
+
+合併儲存庫不等於程式碼自動共用。網站成品與桌面成品目前各自保留；不可直接用舊character-player.html覆蓋desktop/index.html，會遺失六部位勾選與桌面橋接。若要同步共用功能，先比對兩邊、保留桌面差異，再重建及驗證。
+
+## 桌面：六部位動補應用範圍
+
+`settings.captureParts`以head、torso、leftHand、rightHand、leftFoot、rightFoot為鍵，布林值表示是否套用動捕。缺值預設true。UI依序是頭部、軀幹、左手、右手、左腳、右腳，左右仍以角色自身為準。
+
+- 取消勾選立即保留當下顯示的世界矩陣；四肢保留上／下段，含手肘／膝蓋，不只保留局部角度。
+- 未勾選的肢體不得繼承新的軀幹追蹤而漂移；未勾選頭部亦維持世界姿勢。
+- 頭部項目僅控制轉頭；眼口眉繼續追蹤。臉部逾時復位不可改掉未勾選頭部的姿勢。
+- 勾回後恢復該部位的動捕套用；切手動仍可編輯手動角度。攝影機啟動前應擷取未勾選的手動姿勢，重啟鏡頭不可清掉既有維持姿勢。
+- `captureHolds`屬當次工作階段，不寫入JSON。勾選狀態寫入JSON；重新載入角色從JSON手動姿勢開始。GLB烘焙當下顯示姿勢。
+- 程式以captureIDs／captureEnabled／captureActive／rememberCapturePose／primeCaptureHolds配合getGroups、effectiveBody、effectiveOverlay及輸入／序列化處理。captureHolds與原poseLocks不同；clearBody清舊追蹤資料時不可連帶抹掉captureHolds。
+- 舊3秒鎖定UI在桌面已隱藏，現行操作以六個勾選為準；網頁v19仍保留舊鎖定UI，勿混寫版本。
+
+## 網頁v19：缺失保持與3秒鎖定
+
+`settings.holdMissingPose`缺值預設true。腿部完整鏈要求髖／膝／踝有效；不完整時不加入該腿的新追蹤，保留最後有效世界姿勢，無歷史則使用原手動／中立站姿。左右腿獨立，不新增腳底定位或地面位移演算法。
+
+網頁的poseLocks在倒數3秒結束時擷取所選軀幹／四肢姿勢；臉部與頭部不屬此舊鎖定範圍。heldLimbs／heldTorso是自動缺失保持，poseLocks是明確鎖定，後者優先。網頁clearBody會清理它們並取消倒數。此段描述不可套成桌面六部位勾選的重置行為。
+
+## 辨識資訊面板
+
+.detection-info列出來源、左右眼嘴眉、校正後頭部角度及軀幹／四肢有效狀態。video.capture-sensor在畫面外維持播放，不可用停止串流的方式隱藏。狀態須區分新辨識、逾時、沿用姿勢、未套用動捕及手動。VMC不得標示全身。UI結果不存JSON；匯出HTML清掉即時欄位後重新初始化。
+
+## 桌面打包與EX排除：不可違反
+
+主儲存庫 https://github.com/anshaer/grid3D ，網站 https://anshaer.github.io/grid3D/ ，下載入口 https://github.com/anshaer/grid3D/actions/workflows/build-app.yml 。
+
+APP_FILES只允許main.cjs、preload.cjs、index.html、assets/cube.png、assets/cube.ico、assets/cube.svg，再產生精簡執行用package.json。只複製官方Electron執行環境與上述清單，不可複製整個儲存庫或desktop目錄。圖示限指定檔案，新增payload要同步改白名單與測試。
+
+每次清空安全的建置輸出，再重建／驗證payload。EX、examples、motion-source、網站、MD、測試、工作流程及開發用node_modules不進resources/app。官方Electron本身所需的執行環境檔案／授權仍保留。Windows的electron.exe不得被改圖示或重新封裝成自解壓EXE；Mac保留framework相對symlink，更新Info.plist後沿用codesign／ditto流程，不能宣稱本地簽章等於Apple公證。
+
+Actions的run工作目錄是desktop；uses步驟的upload-artifact路徑仍需從根目錄明確寫desktop/dist/VoxelCharacter或desktop/VoxelCharacter-macOS.zip。自動push觸發只包括desktop/**及.github/workflows/build-app.yml，保留workflow_dispatch。三種artifact名稱維持原Windows-folder／macOS-AppleSilicon／macOS-Intel；歷史成品不會搬到新儲存庫，不能把舊run/artifact ID改個repo名就當成新連結，也不能沿用舊SHA-256。
+
+## 驗證與交付
+
+1. 僅改文件時，確認路徑、版本、現行實作及MD連結一致，不宣稱程式功能已同步到未改入口。
+2. 打包改動執行cd desktop && npm test；測試精確白名單、根目錄與desktop內EX排除、舊輸出清理、Windows位元組、Mac符號連結（支援該測試的主機）。
+3. 動捕勾選改動須驗證六部位分別維持、軀幹不帶動未勾肢體、彎折、重新勾選恢復、臉部持續、逾時、切來源／重啟及JSON還原。原DOM／canvas模擬測試需相應執行環境，不能只憑語法檢查宣稱已過。
+4. 交付ZIP不放EX或Git內部資料；使用者合併上傳時保留既有EX。GitHub內建Code → Download ZIP仍包含儲存庫裡的EX，此功能無法用應用白名單排除。
+5. 真正Windows／Mac成品要由Actions完成後下載。尚未執行的遠端建置、真人鏡頭及各平台測試，不得標示成功。
