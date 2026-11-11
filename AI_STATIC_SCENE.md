@@ -3,7 +3,7 @@
 更新：2026-11-11｜主儲存庫grid3D｜桌面v1.6.1
 
 ## 範圍
-網站 https://anshaer.github.io/grid3D/ ，程式庫 https://github.com/anshaer/grid3D 。voxel-builder.html是原固定模型工具的獨立單檔，標題GLB方塊製作器。這套是固定方格模型與逐幀動畫工具，不是FaceLandmarker動捕角色製作器。不要套用另一套schema或聲稱JSON互通。
+網站 https://anshaer.github.io/grid3D/ ，程式庫 https://github.com/anshaer/grid3D 。voxel-builder.html是原固定模型工具的獨立單檔，標題GLB方塊製作器。這套是固定方格模型與逐幀動畫工具，不是FaceLandmarker動捕角色製作器。現支援動捕角色JSON單向匯入並烘焙為固定模型，並不保留追蹤／骨架／表情切換。
 
 ## 結構與座標
 單檔HTML，包含內嵌Three.js／控制器等第三方程式與最後一段應用script。修改時優先定位最後的應用程式，避免誤改壓縮供應商程式。主要狀態N、cells Map、history、scene、camera、renderer、controls、renderGroup、gridGroup、frames等。key為逗號座標x,y,z，toWorld([x,y,z])=[x,z,-y]。使用者座標1～N，X右、Y後、Z上；尺寸32／64／128／256／512。顏色sRGB轉線性處理與匯出軸映射不可任意移除。
@@ -21,10 +21,10 @@ exportAxes可保存輸出軸選擇，值格式請看currentAxes／axisMatrix；�
 從預設單格首次批次匯入可取代起始幀，既有使用者資料應保留確認流程。注意快取invalidateFrames／storeFrame／installFrame／drawFrames與資源dispose；匯出時不要把輔助格線、選取框或參考圖片意外當模型。
 
 ## 驗證要求
-檢查所有script語法；瀏覽器確認初始渲染、加刪格／透明度、JSON往返、非法座標與大檔拒絕、圖片參考、逐幀播放與排序／循環、共同及逐幀鏡頭、GLB／圖片輸出。大量動畫需實測記憶體，不能只增加允許幀數就聲稱流暢。目前合併只調整入口、桌面打包與文件，未改固定模型工具行為；不宣稱此次已重跑全部建模與動畫測試。
+檢查所有script語法；瀏覽器確認初始渲染、加刪格／透明度、JSON往返、非法座標與大檔拒絕、圖片參考、逐幀播放與排序／循環、共同及逐幀鏡頭、GLB／圖片輸出。大量動畫需實測記憶體，不能只增加允許幀數就聲稱流暢。角色轉換測試見tests/static-motion-import.cjs；未重跑全部建模與動畫測試。
 
 ## 與另一套工具及桌面關係
-動捕角色讀AI_MOTION_CHARACTER.md。固定模型JSON不能直接讓動捕桌面應用作角色；如需轉換，要另設計部位、五官與支點映射，先定義轉換規格。桌面下載入口以README的grid3D Actions工作流程為準；舊成品ID及SHA-256不能當成新儲存庫的成品，不捏造簽章或平台測試結果。保留附件中的第三方授權註記，修改後仍交付單檔HTML。
+動捕角色讀AI_MOTION_CHARACTER.md。固定模型JSON不能直接讓動捕桌面應用作角色；動捕→固定的單向匯入已支援，固定→動捕仍需另設計部位、五官與支點映射。桌面下載入口以README的grid3D Actions工作流程為準；舊成品ID及SHA-256不能當成新儲存庫的成品，不捏造簽章或平台測試結果。保留附件中的第三方授權註記，修改後仍交付單檔HTML。
 
 ## 單一儲存庫與桌面應用邊界
 
@@ -67,3 +67,11 @@ EX共有12個動捕角色JSON，請在README及首頁提供下載入口，不要
 - [鼓手](EX/鼓手.json)：多鼓組與鼓棒
 
 這批均為ansha-chibi-studio-v1，不是voxel-editor-v1固定場景模型。維護文件時保留使用者的範例名稱與檔案內容，不用重新生成模型替代既有EX。完整原始碼ZIP與範例專用ZIP可包含EX；Windows／Mac應用payload與Actions應用artifact必須排除EX。
+
+## 動捕角色單向匯入（2026-11-11）
+parseJSON先辨識ansha-chibi-studio-v1及舊ansha-voxel-face-v1/v2，再走importMotionCharacter。內嵌motionImportCore script直接使用motion-source/voxel.js與core.js的原始核心，更新核心時需同步該script，避免另猜RLE或Euler順序。
+轉換前clone→legacy→initRig→validate，不改原始物件。使用defaults表情／head角度、settings.headScale、torso.rotation及各肢rotation／bend；頭角度規則與角色頁一致。附在部位內的道具一起變換。忽略相機、參考圖、追蹤暫態與編輯器隱藏，完整匯入全部幾何。
+以變換後立方體反向取樣建立整數體素，保留調色盤sRGB（角色格式沒有透明度欄位，匯入opacity=1）；原固定模型opacity仍原樣保留。原姿勢在範圍內則不改位置，超界時計算包圍盒並等比縮小置中，不裁掉超界部位。縮小／旋轉受體素解析度限制，細節可能量化。超過10萬格則拒絕，不靜默刪格。支援單檔選取、拖放、批次動畫幀匯入；原檔20MB限制維持。
+匯出只寫voxel-editor-v1，不可宣稱能反向還原角色綁定。測試：node tests/static-motion-import.cjs，涵蓋12個EX範例、部位／彎折變換、倍率、範圍、輸入不變與固定JSON往返。
+
+本次已執行script語法與上述12角色轉換回歸。此環境Chromium因socket權限無法啟動，未完成實際瀏覽器WebGL／點選流程驗收；勿聲稱已實測。
