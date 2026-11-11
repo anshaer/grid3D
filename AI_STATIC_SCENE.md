@@ -42,9 +42,28 @@ exportAxes可保存輸出軸選擇，值格式請看currentAxes／axisMatrix；�
 
 ## EX與打包約束
 
-- 根目錄EX不進桌面成品，也不放入本次交付ZIP；使用者上傳合併檔案時保留現有EX。GitHub內建Code → Download ZIP仍會包括儲存庫本來的EX。
+- 根目錄EX不進桌面成品，但應保留於網站與完整原始碼交付ZIP；使用者上傳合併檔案時保留現有EX。GitHub內建Code → Download ZIP仍會包括儲存庫本來的EX。
 - desktop/build-folder.cjs使用APP_FILES明確白名單：index.html、main.cjs、preload.cjs、三個cube圖示，另產生執行用package.json。不可改成複製整個根目錄或desktop/。
 - voxel-builder.html、EX、examples、motion-source、網站、MD、測試及開發依賴都不進應用payload；官方Electron所需執行環境與授權檔仍保留。
 - Actions只上傳desktop/dist/VoxelCharacter或Mac內層ZIP。修改desktop/**及工作流程才自動建置；更新EX或固定模型網站不觸發。手動Run workflow仍可執行。
 - 打包修改先執行cd desktop && npm test。不要覆蓋desktop/index.html而丟失JSON載入、透明視窗、背景執行及六部位動捕勾選。
 - 實際成品必須等 https://github.com/anshaer/grid3D/actions/workflows/build-app.yml 成功後才有。不得憑文件變更宣稱三平台成品或真人追蹤已測試。
+
+## EX範例索引與保留規則
+
+EX共有12個動捕角色JSON，請在README及首頁提供下載入口，不要因桌面成品排除EX就把網站範例入口或原始碼交付內容刪掉。
+
+- [上班族](EX/上班族.json)：筆電與摺疊桌
+- [公主](EX/公主.json)：金髮粉色禮服、周身愛心
+- [哥特](EX/哥特.json)：歌德龐克服裝
+- [婚紗](EX/婚紗.json)：西式長裙與頭紗
+- [學生](EX/學生.json)：藍髮水手服
+- [學生2](EX/學生2.json)：貓耳毛線帽、眉毛連動
+- [殭屍](EX/殭屍.json)：中式殭屍、周身鬼火
+- [法師](EX/法師.json)：紅髮法師、法杖與異火
+- [禮服](EX/禮服.json)：中式婚紗、大鳳冠
+- [鋼琴](EX/鋼琴.json)：電子琴與琴架
+- [駐唱](EX/駐唱.json)：立地麥克風
+- [鼓手](EX/鼓手.json)：多鼓組與鼓棒
+
+這批均為ansha-chibi-studio-v1，不是voxel-editor-v1固定場景模型。維護文件時保留使用者的範例名稱與檔案內容，不用重新生成模型替代既有EX。完整原始碼ZIP與範例專用ZIP可包含EX；Windows／Mac應用payload與Actions應用artifact必須排除EX。

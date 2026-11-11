@@ -60,6 +60,29 @@
 
 這套沒有鏡頭面部／人體追蹤。其模型JSON為 `voxel-editor-v1`，動畫專案為 `voxel-animation-v1/v2`；與動捕角色的 `ansha-chibi-studio-v1` 不互通，請在原工具載入。單模型匯入最多10萬方塊、20MB，座標為1～N。動畫上限以工具當前驗證為準（目前程式1000幀），效能取決於方塊數及裝置，並非預設可順暢播放的保證。
 
+## 角色範例 JSON（EX）
+
+目前提供12個動捕角色範例，集中在 [EX資料夾](https://github.com/anshaer/grid3D/tree/main/EX)。下載JSON後，在角色製作頁匯入，或於桌面應用的「畫面設定 → 開啟角色JSON」載入。
+
+| 範例 | 內容 |
+| --- | --- |
+| [上班族](EX/上班族.json) | 筆電與摺疊桌 |
+| [公主](EX/公主.json) | 金髮粉色禮服、周身愛心 |
+| [哥特](EX/哥特.json) | 歌德龐克服裝 |
+| [婚紗](EX/婚紗.json) | 西式長裙與頭紗 |
+| [學生](EX/學生.json) | 藍髮水手服 |
+| [學生2](EX/學生2.json) | 貓耳毛線帽、眉毛連動 |
+| [殭屍](EX/殭屍.json) | 中式殭屍、周身鬼火 |
+| [法師](EX/法師.json) | 紅髮法師、法杖與異火 |
+| [禮服](EX/禮服.json) | 中式婚紗、大鳳冠 |
+| [鋼琴](EX/鋼琴.json) | 電子琴與琴架 |
+| [駐唱](EX/駐唱.json) | 立地麥克風 |
+| [鼓手](EX/鼓手.json) | 多鼓組與鼓棒 |
+
+以上都是 `ansha-chibi-studio-v1` 動捕角色，不能直接載入固定角色／場景工具。周身鬼火、異火與愛心是懸浮造型，非獨立繞行動畫；貓耳是眉毛表情的兩段切換。實際內容以EX內JSON為準。
+
+**EX保留在網站、儲存庫與完整原始碼交付包；只有EXE／Mac應用成品排除EX。** 範例不會自動內建到桌面應用，需另行載入。僅更新EX不觸發桌面建置。
+
 ## 桌面免安裝下載
 
 [前往 grid3D 桌面應用 Actions](https://github.com/anshaer/grid3D/actions/workflows/build-app.yml)，開啟最新成功的執行紀錄，在 **Artifacts** 下載對應平台：
@@ -112,7 +135,7 @@ Windows解壓縮後執行 `electron.exe` 並保留整個資料夾；Mac解開下
 
 ## 更新與交付
 
-用交付ZIP覆蓋或合併儲存庫檔案即可，勿刪除EX；詳見[MIGRATION.md](MIGRATION.md)。本次交付ZIP不含EX，Actions應用成品也不含EX。GitHub內建Code → Download ZIP下載的是整個儲存庫，因此仍會含儲存庫中的EX。
+用交付ZIP覆蓋或合併儲存庫檔案即可，勿刪除EX；詳見[MIGRATION.md](MIGRATION.md)。完整原始碼交付ZIP已包含EX；Actions桌面應用成品不含EX。GitHub內建Code → Download ZIP下載的是整個儲存庫，因此仍會含儲存庫中的EX。
 
 上傳原始碼後，請等待grid3D的Actions成功，才有新的Windows／Mac下載包。舊儲存庫的成品與SHA-256不會自動移轉。原始碼ZIP不等於已編譯的EXE／.app；未完成Actions或實機檢查時，不應標示已建置／已實測。
 
